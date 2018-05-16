@@ -4,22 +4,40 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const Sequelize = require('sequelize');
 const COOKIE_SECRET = 'cookie secret';
+const Sequelize = require('sequelize');
+
 
 const KIMY = { id: 1, firstname: 'kim', lastname: 'jong_un', email: 'pyongyang@redstar.com', password: 'missile_nuclaire'};
 
-
+//DB
+// connexion à la base de données, new Sequelize( nom de la db, id/pseudo, password)
+const db = new Sequelize('blog', 'root', '', {
+    host: 'localhost',
+    dialect: 'mysql'
+});
+//Définition de la table articles dans le js
+const Users = db.define('users', {
+    pseudo: {
+        type: Sequelize.STRING
+    },
+    pwd: {
+        type: Sequelize.STRING
+    },
+    email: {
+        type: Sequelize.STRING
+    }
+});
 
 
 
 
 //code authentification, ne changer que KIMY à mettre en varaible
-passport.use(new LocalStrategy((username, password, cb) => {if (username !== KIMY.email) { return cb(null, false); }
-    if (password !== KIMY.password) { return cb(null, false); } return cb(null, KIMY);}));
+passport.use(new LocalStrategy((username, password, cb) => {if (username !== Users.email) { return cb(null, false); }
+    if (password !== Users.password) { return cb(null, false); } return cb(null, Users);}));
 passport.serializeUser((user, cb) => { cb(null, user.email); });
-passport.deserializeUser((email, cb) => { if (email !== KIMY.email)
-{ return cb(new Error("No user corresponding to the cookie's email address")); } return cb(null, KIMY);});
+passport.deserializeUser((email, cb) => { if (email !== Users.email)
+{ return cb(new Error("No user corresponding to the cookie's email address")); } return cb(null, Users);});
 
 // middleware à ne pas changer
 const app = express();
@@ -30,9 +48,36 @@ app.use(session({ secret: COOKIE_SECRET, resave: false, saveUninitialized: false
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+//route de base, sur index.pug,
 app.get('/', (req, res) => {
-    res.render('home', {user: req.user});
+    Users
+        .sync() // création de la table
+        .then(() => {
+            Users
+                .findAll()
+                .then((users) => {
+                    res.render('home', {users}); //récupère et envoie les données
+                })
+        });
 });
+
+//lorsque l'on submit
+app.post('/api/post', (req, res) => {
+    const pseudo = req.body.pseudo;
+    const pwd = req.body.pwd;
+    const email = req.body.email;
+    Users    //nouveaux articles cré dans la base
+        .create({pseudo: pseudo, pwd: pwd, email: email})
+        .then(() => res.redirect('/'));
+});
+
+
+
+// app.get('/', (req, res) => {
+//     res.render('home', {user: req.user});
+// });
+
 app.get('/login', (req, res) => {
     res.render('login');
 });

@@ -1,6 +1,17 @@
 html
     head
-        title ljdfgnjlqfn
+        title Login
 
         body
-            p hello
+            h1 Avez vous besoins de créer un user?
+
+            h2 SIGN UP
+            form(method="post", action="/api/post")
+                input(type="text", name="pseudo", placeholder="pseudo")
+                input(type="text", name="email", placeholder="email")
+                input(type="text", name="pwd", placeholder="pwd")
+                button(type="submit") Validez
+
+
+            h2 retour à l'acceuil
+                a(href='/') back

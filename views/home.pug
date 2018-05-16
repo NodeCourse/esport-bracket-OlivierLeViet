@@ -5,12 +5,12 @@ html
     body
         h1 qskjgerkjg
 
-        if user
-            h2 #{user.firstname}
+        //if users
+        //    h2 #{users.pseudo}
 
         form(method="post", action="/login")
             input(type="text", name="username", placeholder="username")
-            input(type="text", name="password", placeholder="pwd")
+            input(type="text", name="password", placeholder="password")
             button(type="submit") post
 
 
