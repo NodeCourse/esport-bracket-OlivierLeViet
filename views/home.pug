@@ -1,0 +1,16 @@
+html
+    head
+        title olivier
+
+    body
+        h1 qskjgerkjg
+
+        if user
+            h2 #{user.firstname}
+
+        form(method="post", action="/login")
+            input(type="text", name="username", placeholder="username")
+            input(type="text", name="password", placeholder="pwd")
+            button(type="submit") post
+
+
