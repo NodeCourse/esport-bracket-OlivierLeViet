@@ -13,5 +13,5 @@ html
                 input(type="text", name="password", placeholder="password")
                 button(type="submit") Connexion
 
-
-        h2 Vous êtes connecté en tant que #{user}
+        if user
+            h2 Vous êtes connecté en tant que #{user.email}
