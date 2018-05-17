@@ -8,7 +8,13 @@ const COOKIE_SECRET = 'cookie secret';
 const Sequelize = require('sequelize');
 
 
-const KIMY = { id: 1, firstname: 'kim', lastname: 'jong_un', email: 'pyongyang@redstar.com', password: 'missile_nuclaire'};
+const KIMY = {
+    id: 1,
+    firstname: 'kim',
+    lastname: 'jong_un',
+    email: 'pyongyang@redstar.com',
+    password: 'missile_nuclaire'
+};
 
 //DB
 // connexion à la base de données, new Sequelize( nom de la db, id/pseudo, password)
@@ -30,21 +36,35 @@ const Users = db.define('users', {
 });
 
 
-
-
 //code authentification, ne changer que KIMY à mettre en varaible
-passport.use(new LocalStrategy((username, password, cb) => {if (username !== Users.email) { return cb(null, false); }
-    if (password !== Users.password) { return cb(null, false); } return cb(null, Users);}));
-passport.serializeUser((user, cb) => { cb(null, user.email); });
-passport.deserializeUser((email, cb) => { if (email !== Users.email)
-{ return cb(new Error("No user corresponding to the cookie's email address")); } return cb(null, Users);});
+passport.use(new LocalStrategy((email, pwd, cb) => {
+
+    Users
+        .findOne({email: email, pwd: pwd})
+        .then((user) => {
+            cb(null, user || false);
+        });
+    
+}));
+passport.serializeUser((user, cb) => {
+    cb(null, user.email);
+});
+passport.deserializeUser((email, cb) => {
+
+
+    Users
+        .findOne({email: email})
+        .then((user) => {
+            return cb(null, user || false);
+        });
+});
 
 // middleware à ne pas changer
 const app = express();
 app.set('view engine', 'pug');
 app.use(cookieParser(COOKIE_SECRET));
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(session({ secret: COOKIE_SECRET, resave: false, saveUninitialized: false}));
+app.use(session({secret: COOKIE_SECRET, resave: false, saveUninitialized: false}));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -73,7 +93,6 @@ app.post('/api/post', (req, res) => {
 });
 
 
-
 // app.get('/', (req, res) => {
 //     res.render('home', {user: req.user});
 // });
@@ -85,7 +104,8 @@ app.get('/login', (req, res) => {
 
 app.post('/login', passport.authenticate('local', {
         successRedirect: '/',
-        failureRedirect: '/login', })
+        failureRedirect: '/login',
+    })
 );
 
 console.log("server on 3k");
