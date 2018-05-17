@@ -1,0 +1,17 @@
+html
+    head
+        title Olivier
+        link(rel="stylesheet", href="/css/styles.css")
+
+    body
+        h1 Authentification
+
+        div(class="container")
+            p Souhaitez-vous connecter?
+            form(method="post", action="/login" )
+                input(type="text", name="username", placeholder="username")
+                input(type="text", name="password", placeholder="password")
+                button(type="submit") Connexion
+
+        if user
+            h2 Vous êtes connecté en tant que #{user.email}

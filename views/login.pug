@@ -1,0 +1,17 @@
+html
+    head
+        title Inscription
+        link(rel="stylesheet", href="/css/styles.css")
+
+        body
+            h1 Connexion échoué
+
+            h2 Création d'un nouvel utilisateur
+            div(class="container")
+                form(method="post", action="/api/post")
+                    input(type="text", name="pseudo", placeholder="pseudo")
+                    input(type="text", name="email", placeholder="email")
+                    input(type="text", name="pwd", placeholder="pwd")
+                    button(type="submit") Validez
+            h2 Retour à l'accueil
+                a(href='/') ...Retour
