@@ -1,16 +1,17 @@
 html
     head
-        title olivier
+        title Olivier
+        link(rel="stylesheet", href="/css/styles.css")
 
     body
-        h1 qskjgerkjg
+        h1 Authentification
 
-        //if users
-        //    h2 #{users.pseudo}
+        div(class="container")
+            p Souhaitez-vous connecter?
+            form(method="post", action="/login" )
+                input(type="text", name="username", placeholder="username")
+                input(type="text", name="password", placeholder="password")
+                button(type="submit") Connexion
 
-        form(method="post", action="/login")
-            input(type="text", name="username", placeholder="username")
-            input(type="text", name="password", placeholder="password")
-            button(type="submit") post
 
-
+        h2 Vous êtes connecté en tant que #{user}
