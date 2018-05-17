@@ -61,15 +61,19 @@ app.use(session({secret: COOKIE_SECRET, resave: false, saveUninitialized: false}
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 //lorsque l'on submit
 app.post('/api/post', (req, res) => {
     const pseudo = req.body.pseudo;
     const pwd = req.body.pwd;
     const email = req.body.email;
     Users    //nouveaux articles créé dans la base
-        .create({pseudo: pseudo, pwd: pwd, email: email})
-        .then(() => res.redirect('/'));
+        .sync()
+        .then(() => {
+            Users
+                .create({pseudo: pseudo, pwd: pwd, email: email})
+                .then(() => res.redirect('/'));
+        })
+
 });
 
 
@@ -81,27 +85,13 @@ app.get('/login', (req, res) => {
     res.render('login');
 });
 
-//
-// //route de base, sur index.pug,
-//         app.get('/', (req, res, email) => {
-//             Users
-//                 .sync() // création de la table
-//                 .then(() => {
-//                     Users
-//                         .findOne({where: {email: email}})
-//                         .then(() => {
-//                             res.render('home', {email}); //récupère et envoie les données
-//                         })
-//                 });
-// });
-//
-
-
 app.post('/login', passport.authenticate('local', {
         successRedirect: '/',
         failureRedirect: '/login',
     })
 );
+
+
 
 
 console.log("server on 3k");
